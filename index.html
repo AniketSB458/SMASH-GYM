@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SMASH GYM</title>
+  <meta name="description" content="SMASH GYM: trainee management, fee tracking, subscription monitoring and business intelligence dashboard.">
+
+  <!-- Fonts: Barlow Condensed (display/numbers) + DM Sans (interface). Fallbacks are defined in style.css -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Apply the saved theme before first paint to avoid a flash -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('smashgym.theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { /* storage unavailable: keep default theme */ }
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ===================== SVG ICON SPRITE ===================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></symbol>
+  <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16v-5"/><path d="M12 16V7"/><path d="M17 16v-8"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+</svg>
+
+<!-- ===================================================================
+     LOGIN VIEW (shown first; no gym data exists in the DOM until sign-in)
+     =================================================================== -->
+<main id="loginView" class="login">
+  <section class="login-hero" aria-label="SMASH GYM brand">
+    <div class="brand-lockup">
+      <span class="brand-mark"><svg class="ico"><use href="#i-dumbbell"/></svg></span>
+      <span class="brand-name">SMASH GYM</span>
+    </div>
+
+    <div class="hero-copy">
+      <h1>Train Hard.<br>Track Smart.<br>Grow Strong.</h1>
+      <p>Trainee records, fee collection, renewals and business intelligence in one admin workspace.</p>
+    </div>
+
+    <p class="hero-foot">Business Intelligence academic project. Frontend only, no backend.</p>
+  </section>
+
+  <section class="login-panel">
+    <button class="icon-btn login-theme" type="button" data-act="theme" aria-label="Switch between dark and light theme">
+      <svg class="ico"><use href="#i-sun"/></svg>
+    </button>
+
+    <div class="login-card">
+      <div class="login-brand-mobile hide-desktop">
+        <span class="brand-mark"><svg class="ico"><use href="#i-dumbbell"/></svg></span>
+        <div>
+          <div class="brand-name">SMASH GYM</div>
+          <div class="side-tag">Train Hard. Track Smart. Grow Strong.</div>
+        </div>
+      </div>
+      <h2>Admin sign in</h2>
+      <p class="muted">Trainee details, payments, subscriptions and analytics are visible to the administrator only.</p>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="loginUser">Username</label>
+          <input id="loginUser" class="input" type="text" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="loginPass">Password</label>
+          <div class="input-group">
+            <input id="loginPass" class="input" type="password" autocomplete="current-password" required>
+            <button type="button" class="icon-btn" data-act="toggle-pass" aria-label="Show or hide password"><svg class="ico"><use href="#i-eye"/></svg></button>
+          </div>
+        </div>
+        <p id="loginError" class="form-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block" type="submit">Sign in to dashboard</button>
+      </form>
+
+      <div class="demo-box">
+        <p><strong>Demo credentials</strong></p>
+        <p>Username: <code>admin</code></p>
+        <p>Password: <code>Smash@2026</code></p>
+        <button type="button" class="btn btn-ghost btn-sm" data-act="fill-demo">Fill demo credentials</button>
+      </div>
+
+      <p class="fine">Academic demonstration only. This login is checked in the browser, so it is not production security. Real systems must authenticate on a server.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ===================================================================
+     APPLICATION SHELL (hidden until the admin is authenticated)
+     =================================================================== -->
+<div id="appView" class="app" hidden>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar" aria-label="Main navigation">
+    <div class="side-brand">
+      <div class="side-brand-inner">
+        <span class="brand-mark"><svg class="ico"><use href="#i-dumbbell"/></svg></span>
+        <div>
+          <div class="brand-name">SMASH GYM</div>
+          <div class="side-tag">Train Hard. Track Smart. Grow Strong.</div>
+        </div>
+      </div>
+      <button class="icon-btn side-close-btn hide-desktop" type="button" data-act="close-menu" aria-label="Close navigation menu">
+        <svg class="ico"><use href="#i-x"/></svg>
+      </button>
+    </div>
+
+    <nav class="nav">
+      <a href="#/dashboard" data-page="dashboard"><svg class="ico"><use href="#i-dashboard"/></svg><span>Dashboard</span></a>
+      <a href="#/trainees" data-page="trainees"><svg class="ico"><use href="#i-users"/></svg><span>Trainees</span><em class="nav-count" id="navCount">0</em></a>
+      <a href="#/analytics" data-page="analytics"><svg class="ico"><use href="#i-chart"/></svg><span>Analytics</span></a>
+      <a href="#/insights" data-page="insights"><svg class="ico"><use href="#i-bulb"/></svg><span>Business insights</span></a>
+      <a href="#/quality" data-page="quality"><svg class="ico"><use href="#i-shield"/></svg><span>Data accuracy</span></a>
+      <a href="#/reports" data-page="reports"><svg class="ico"><use href="#i-file"/></svg><span>Reports</span></a>
+      <a href="#/settings" data-page="settings"><svg class="ico"><use href="#i-sliders"/></svg><span>Settings</span></a>
+    </nav>
+
+    <div class="side-foot">
+      <div class="side-user">
+        <span class="avatar">SP</span>
+        <div><strong>SHUBHAM POWAR</strong><small>Gym owner</small></div>
+      </div>
+      <button class="side-btn" type="button" data-act="logout"><svg class="ico"><use href="#i-logout"/></svg><span>Log out</span></button>
+    </div>
+  </aside>
+  <div id="scrim" class="scrim" data-act="close-menu"></div>
+
+  <div class="main-col">
+    <!-- Top bar -->
+    <header class="topbar">
+      <button class="icon-btn menu-btn" type="button" data-act="menu" aria-label="Open navigation menu"><svg class="ico"><use href="#i-menu"/></svg></button>
+      <div class="top-title">
+        <strong id="pageTitle">Dashboard</strong>
+        <small id="todayLabel"></small>
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-primary btn-sm" type="button" data-act="add"><svg class="ico"><use href="#i-plus"/></svg><span class="hide-sm">Add new trainee</span></button>
+        <button class="icon-btn" type="button" data-act="theme" aria-label="Switch between dark and light theme"><svg class="ico"><use href="#i-sun"/></svg></button>
+        <button class="icon-btn" type="button" data-act="logout" aria-label="Log out"><svg class="ico"><use href="#i-logout"/></svg></button>
+      </div>
+    </header>
+
+    <main class="content" id="content">
+
+      <div class="print-only print-head">
+        <strong>SMASH GYM</strong> business report
+        <span id="printMeta"></span>
+      </div>
+
+      <!-- ============ DASHBOARD ============ -->
+      <section class="page" id="page-dashboard" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="greeting">Dashboard</h1>
+            <p class="muted" id="dashSub"></p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-ghost" type="button" data-act="go" data-page="analytics"><svg class="ico"><use href="#i-chart"/></svg>Open analytics</button>
+            <button class="btn btn-primary" type="button" data-act="add"><svg class="ico"><use href="#i-plus"/></svg>Add new trainee</button>
+          </div>
+        </div>
+
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <div class="card" id="dashAlertsCard">
+          <header class="card-head">
+            <h3>Needs attention today</h3>
+            <button class="btn btn-ghost btn-sm" type="button" data-act="go" data-page="insights">All insights</button>
+          </header>
+          <div class="alert-list" id="dashAlerts"></div>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <header class="card-head"><h3>Revenue collected, last 6 months</h3></header>
+            <div class="chart-box"><canvas id="ch-dash-revenue" aria-label="Line chart of monthly revenue" role="img"></canvas></div>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>Subscription status</h3></header>
+            <div class="chart-box"><canvas id="ch-dash-status" aria-label="Bar chart of subscription status" role="img"></canvas></div>
+          </article>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <header class="card-head">
+              <h3>Recent payments</h3>
+              <button class="btn btn-ghost btn-sm" type="button" data-act="go" data-page="reports">All reports</button>
+            </header>
+            <div id="dashPayments"></div>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>Renewals due within 7 days</h3></header>
+            <div id="dashRenewals"></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ TRAINEE MANAGEMENT ============ -->
+      <section class="page" id="page-trainees" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Trainee management</h1>
+            <p class="muted" id="traineeSub">Every registered trainee, with fees and subscription details.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-ghost" type="button" data-act="export-trainees"><svg class="ico"><use href="#i-download"/></svg>Export CSV</button>
+            <button class="btn btn-primary" type="button" data-act="add"><svg class="ico"><use href="#i-plus"/></svg>+ Add New Trainee</button>
+          </div>
+        </div>
+
+        <div class="mini-stats" id="traineeStats"></div>
+
+        <div class="card toolbar-card">
+          <div class="toolbar">
+            <label class="search">
+              <svg class="ico"><use href="#i-search"/></svg>
+              <input id="searchInput" type="search" placeholder="Search by name, trainee ID or phone number" aria-label="Search trainees by name, trainee ID or phone number" autocomplete="off">
+            </label>
+            <select id="filterPlan" class="input" aria-label="Filter by membership plan">
+              <option value="">All plans</option>
+              <option>Monthly</option><option>Quarterly</option><option>Half-Yearly</option><option>Yearly</option>
+            </select>
+            <select id="filterStatus" class="input" aria-label="Filter by subscription status">
+              <option value="">All subscriptions</option>
+              <option value="Active">Active (includes expiring soon)</option>
+              <option value="Expiring Soon">Expiring Soon</option>
+              <option value="Expired">Expired</option>
+              <option value="Upcoming">Upcoming (not started)</option>
+            </select>
+            <select id="filterPay" class="input" aria-label="Filter by payment status">
+              <option value="">All payments</option>
+              <option value="Paid">Paid</option>
+              <option value="Partially Paid">Partially Paid</option>
+              <option value="Pending">Pending</option>
+              <option value="Due">Balance due (partial or pending)</option>
+            </select>
+            <select id="sortSelect" class="input" aria-label="Sort trainees by">
+              <option value="name">Sort: Name</option>
+              <option value="start">Sort: Start date</option>
+              <option value="end">Sort: Expiry date</option>
+              <option value="total">Sort: Total fees</option>
+              <option value="pending">Sort: Pending fees</option>
+            </select>
+            <button class="btn btn-ghost" type="button" id="sortDir" aria-label="Toggle sort direction">Ascending</button>
+            <button class="btn btn-ghost" type="button" data-act="clear-filters">Clear filters</button>
+          </div>
+          <div class="chips" id="quickChip" hidden></div>
+        </div>
+
+        <div class="table-scroll-hint hide-desktop">
+          <svg class="ico"><use href="#i-sliders"/></svg>
+          <span>Swipe horizontally to view fees, dates & actions &rarr;</span>
+        </div>
+        <div class="table-wrap" id="traineeTableWrap">
+          <table class="data" id="traineeTable">
+            <thead>
+              <tr>
+                <th>Trainee ID</th>
+                <th class="col-name sortable" data-sort="name" aria-sort="none">Trainee Name</th>
+                <th>Contact</th>
+                <th>Membership Plan</th>
+                <th class="sortable" data-sort="start" aria-sort="none">Start Date</th>
+                <th class="sortable" data-sort="end" aria-sort="none">End Date</th>
+                <th class="num sortable" data-sort="total" aria-sort="none">Total Fees</th>
+                <th class="num">Amount Paid</th>
+                <th class="num sortable" data-sort="pending" aria-sort="none">Pending Fees</th>
+                <th>Subscription Status</th>
+                <th>Payment Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="traineeBody"></tbody>
+          </table>
+        </div>
+        <div id="traineeEmpty" class="empty" hidden></div>
+
+        <div class="table-foot">
+          <span id="resultCount" class="muted"></span>
+          <nav id="pager" class="pager" aria-label="Pagination"></nav>
+          <label class="rows-per">Rows per page
+            <select id="perPage" class="input input-sm">
+              <option value="10">10</option><option value="15">15</option><option value="25">25</option><option value="50">50</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <!-- ============ ANALYTICS ============ -->
+      <section class="page" id="page-analytics" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Business intelligence analytics</h1>
+            <p class="muted" id="rangeLabel"></p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-ghost" type="button" data-act="export-summary"><svg class="ico"><use href="#i-download"/></svg>Export summary CSV</button>
+            <button class="btn btn-ghost" type="button" data-act="print"><svg class="ico"><use href="#i-printer"/></svg>Print report</button>
+          </div>
+        </div>
+
+        <div class="card range-bar no-print">
+          <div class="field">
+            <label for="rangePreset">Reporting period</label>
+            <select id="rangePreset" class="input">
+              <option value="6m">Last 6 months</option>
+              <option value="12m">Last 12 months</option>
+              <option value="fy">This financial year (Apr to Mar)</option>
+              <option value="ytd">This calendar year</option>
+              <option value="all">All time</option>
+              <option value="custom">Custom range</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rangeFrom">From</label>
+            <input id="rangeFrom" class="input" type="date">
+          </div>
+          <div class="field">
+            <label for="rangeTo">To</label>
+            <input id="rangeTo" class="input" type="date">
+          </div>
+          <p class="range-note muted" id="rangeNote">The period filters revenue, registration and revenue-by-plan charts and the summary. Plan, status, fee, expiry and time charts show today's records.</p>
+        </div>
+
+        <div class="stat-row" id="rangeSummary"></div>
+
+        <div class="grid-2">
+          <article class="card span-all">
+            <header class="card-head"><h3>1. Monthly revenue analysis</h3><span class="chip-note">Uses reporting period</span></header>
+            <div class="chart-box"><canvas id="ch-revenue" role="img" aria-label="Line chart of fees collected per month"></canvas></div>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>2. Membership plan distribution</h3><span class="chip-note">Today's records</span></header>
+            <div class="chart-box"><canvas id="ch-plan" role="img" aria-label="Doughnut chart of membership plans"></canvas></div>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>3. Subscription status analysis</h3><span class="chip-note">Today's records</span></header>
+            <div class="chart-box"><canvas id="ch-status" role="img" aria-label="Bar chart of subscription status"></canvas></div>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>4. Fee collection analysis</h3><span class="chip-note" id="collectNote">Current memberships</span></header>
+            <div class="chart-box"><canvas id="ch-fees" role="img" aria-label="Stacked bar chart of paid and pending fees by plan"></canvas></div>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>5. Trainee registration trend</h3><span class="chip-note">Uses reporting period</span></header>
+            <div class="chart-box"><canvas id="ch-reg" role="img" aria-label="Line chart of new registrations per month"></canvas></div>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>6. Revenue by membership plan</h3><span class="chip-note">Uses reporting period</span></header>
+            <div class="chart-box"><canvas id="ch-planrev" role="img" aria-label="Bar chart of revenue by membership plan"></canvas></div>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>7. Subscription expiry forecast</h3><span class="chip-note">Next 30 days</span></header>
+            <div class="chart-box"><canvas id="ch-forecast" role="img" aria-label="Bar chart of expiries within 7, 15 and 30 days"></canvas></div>
+          </article>
+          <article class="card span-all">
+            <header class="card-head"><h3>8. Training time preferences</h3><span class="chip-note">Today's records</span></header>
+            <div class="chart-box chart-short"><canvas id="ch-time" role="img" aria-label="Bar chart of preferred training times"></canvas></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ BUSINESS INSIGHTS ============ -->
+      <section class="page" id="page-insights" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Business insights</h1>
+            <p class="muted">Generated from the current trainee records. Names and numbers update whenever the data changes.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-ghost" type="button" data-act="print"><svg class="ico"><use href="#i-printer"/></svg>Print</button>
+          </div>
+        </div>
+        <div class="insight-grid" id="insightList"></div>
+        <h2 class="section-title">Recommended actions</h2>
+        <div class="reco-grid" id="recoGrid"></div>
+      </section>
+
+      <!-- ============ DATA ACCURACY ============ -->
+      <section class="page" id="page-quality" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Data accuracy</h1>
+            <p class="muted">Every score below is calculated from the stored records. Nothing is hardcoded.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-ghost" type="button" data-act="print"><svg class="ico"><use href="#i-printer"/></svg>Print</button>
+          </div>
+        </div>
+        <div id="qualityPanel"></div>
+      </section>
+
+      <!-- ============ REPORTS ============ -->
+      <section class="page" id="page-reports" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Reports</h1>
+            <p class="muted">Payments, renewals, expired memberships and outstanding balances, with trainee names.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-ghost" type="button" data-act="export-all"><svg class="ico"><use href="#i-download"/></svg>Export all trainees</button>
+            <button class="btn btn-ghost" type="button" data-act="export-summary"><svg class="ico"><use href="#i-download"/></svg>Export summary</button>
+            <button class="btn btn-primary" type="button" data-act="print"><svg class="ico"><use href="#i-printer"/></svg>Print report</button>
+          </div>
+        </div>
+        <div class="stat-row" id="reportSummary"></div>
+        <article class="card"><header class="card-head"><h3>Recent payments</h3></header><div id="repPayments"></div></article>
+        <article class="card"><header class="card-head"><h3>Upcoming renewals (next 7 days)</h3></header><div id="repRenewals"></div></article>
+        <article class="card"><header class="card-head"><h3>Expired memberships</h3></header><div id="repExpired"></div></article>
+        <article class="card"><header class="card-head"><h3>Pending payments</h3></header><div id="repPending"></div></article>
+      </section>
+
+      <!-- ============ SETTINGS ============ -->
+      <section class="page" id="page-settings" hidden>
+        <div class="page-head">
+          <div>
+            <h1>Settings and documentation</h1>
+            <p class="muted">Theme, demo data and the business rules used across the dashboard.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <header class="card-head"><h3>Appearance</h3></header>
+            <p class="muted">Switch between the dark and light theme. Charts redraw with the matching colours.</p>
+            <button class="btn btn-ghost" type="button" data-act="theme"><svg class="ico"><use href="#i-moon"/></svg><span id="themeLabel">Switch theme</span></button>
+          </article>
+          <article class="card">
+            <header class="card-head"><h3>Demo data</h3></header>
+            <p class="muted">Restore the 30 seeded trainees. This replaces every record you added or edited in this browser.</p>
+            <button class="btn btn-danger" type="button" data-act="reset"><svg class="ico"><use href="#i-reset"/></svg>Reset demo data</button>
+          </article>
+        </div>
+
+        <article class="card">
+          <header class="card-head"><h3>Business intelligence definitions</h3></header>
+          <dl class="defs">
+            <dt>Total revenue collected</dt><dd>Sum of every payment received in the payment ledger, across current and earlier membership terms.</dd>
+            <dt>Pending fees</dt><dd>Total membership fee minus amount paid, summed across current memberships. Never below zero.</dd>
+            <dt>Active subscription</dt><dd>Start date is on or before today and end date is on or after today.</dd>
+            <dt>Expiring soon</dt><dd>An active subscription whose end date is within the next 7 days.</dd>
+            <dt>Expired subscription</dt><dd>End date is before today.</dd>
+            <dt>New trainees this month</dt><dd>Trainees whose registration (join) date falls in the current calendar month.</dd>
+            <dt>Renewal rate</dt><dd>Renewed trainees divided by eligible trainees. Eligible means a trainee who has reached the end of a term: those who renewed at least once, plus those whose membership expired without renewal.</dd>
+            <dt>Revenue growth</dt><dd>(Current period revenue minus previous period revenue) divided by previous period revenue, times 100. Shown only when the previous period has revenue. Insights compare month to date with the same number of days last month.</dd>
+            <dt>Data completeness</dt><dd>Correctly populated required fields divided by total required fields, times 100.</dd>
+            <dt>Data accuracy score</dt><dd>Average of five measures: field completeness, valid subscription dates, correct pending-fee calculation, unique trainee IDs and valid fee/payment records.</dd>
+            <dt>Overpayments</dt><dd>Not allowed. No advance-payment rule is implemented, so Amount paid can never exceed the membership fee.</dd>
+          </dl>
+        </article>
+
+        <article class="card">
+          <header class="card-head"><h3>About this project</h3></header>
+          <p class="muted">SMASH GYM is a frontend-only Business Intelligence project built with HTML, CSS, vanilla JavaScript and Chart.js. Records are stored in this browser's localStorage. The admin login is for academic demonstration and is not production security.</p>
+        </article>
+      </section>
+
+    </main>
+
+    <!-- Mobile Bottom Tab Bar -->
+    <nav class="mobile-bottom-bar hide-desktop" aria-label="Mobile quick navigation">
+      <a href="#/dashboard" data-page="dashboard" class="mobile-tab" aria-label="Dashboard">
+        <svg class="ico"><use href="#i-dashboard"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="#/trainees" data-page="trainees" class="mobile-tab" aria-label="Trainees">
+        <svg class="ico"><use href="#i-users"/></svg>
+        <span>Trainees</span>
+      </a>
+      <button type="button" class="mobile-tab-center" data-act="add" aria-label="Add new trainee">
+        <svg class="ico"><use href="#i-plus"/></svg>
+      </button>
+      <a href="#/analytics" data-page="analytics" class="mobile-tab" aria-label="Analytics">
+        <svg class="ico"><use href="#i-chart"/></svg>
+        <span>Analytics</span>
+      </a>
+      <button type="button" class="mobile-tab" data-act="menu" aria-label="Open full menu">
+        <svg class="ico"><use href="#i-menu"/></svg>
+        <span>Menu</span>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<!-- ===================================================================
+     DIALOGS
+     =================================================================== -->
+
+<!-- Add / edit / renew trainee -->
+<dialog id="traineeDialog" class="modal" aria-labelledby="formTitle">
+  <form id="traineeForm" novalidate>
+    <header class="modal-head">
+      <div>
+        <h2 id="formTitle">Add new trainee</h2>
+        <p class="muted" id="formSub">Fields marked * are required.</p>
+      </div>
+      <button type="button" class="icon-btn" data-act="close-dialog" aria-label="Close form"><svg class="ico"><use href="#i-x"/></svg></button>
+    </header>
+
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field" data-field="id">
+          <label for="f-id">Trainee ID (automatic)</label>
+          <input id="f-id" class="input" type="text" readonly>
+        </div>
+        <div class="field span-2" data-field="name">
+          <label for="f-name">Full name *</label>
+          <input id="f-name" class="input" type="text" maxlength="60" autocomplete="off" placeholder="e.g. Rahul Patil">
+          <small class="err" role="alert"></small>
+        </div>
+
+        <div class="field" data-field="phone">
+          <label for="f-phone">Contact number *</label>
+          <input id="f-phone" class="input" type="tel" inputmode="numeric" maxlength="16" placeholder="10-digit mobile number">
+          <small class="err" role="alert"></small>
+        </div>
+        <div class="field" data-field="age">
+          <label for="f-age">Age *</label>
+          <input id="f-age" class="input" type="number" min="12" max="90" step="1">
+          <small class="err" role="alert"></small>
+        </div>
+        <div class="field" data-field="gender">
+          <label for="f-gender">Gender *</label>
+          <select id="f-gender" class="input">
+            <option value="">Select</option><option>Male</option><option>Female</option><option>Other</option>
+          </select>
+          <small class="err" role="alert"></small>
+        </div>
+
+        <div class="field" data-field="plan">
+          <label for="f-plan">Membership plan *</label>
+          <select id="f-plan" class="input">
+            <option>Monthly</option><option>Quarterly</option><option>Half-Yearly</option><option>Yearly</option>
+          </select>
+          <small class="err" role="alert"></small>
+        </div>
+        <div class="field" data-field="startDate">
+          <label for="f-startDate">Subscription start date *</label>
+          <input id="f-startDate" class="input" type="date">
+          <small class="err" role="alert"></small>
+        </div>
+        <div class="field" data-field="endDate">
+          <label for="f-endDate">Subscription end date *</label>
+          <input id="f-endDate" class="input" type="date">
+          <small class="err" role="alert"></small>
+        </div>
+
+        <div class="field" data-field="totalFee">
+          <label for="f-totalFee">Total membership fee (₹) *</label>
+          <input id="f-totalFee" class="input" type="number" min="0" step="1" inputmode="numeric">
+          <small class="err" role="alert"></small>
+        </div>
+        <div class="field" data-field="amountPaid">
+          <label for="f-amountPaid">Amount paid (₹) *</label>
+          <input id="f-amountPaid" class="input" type="number" min="0" step="1" inputmode="numeric">
+          <small class="err" role="alert"></small>
+        </div>
+        <div class="field" data-field="pending">
+          <label for="f-pending">Pending fees (calculated)</label>
+          <input id="f-pending" class="input" type="text" readonly>
+          <small class="hint">Total fee minus amount paid.</small>
+        </div>
+
+        <div class="field" data-field="paymentDate">
+          <label for="f-paymentDate">Payment date</label>
+          <input id="f-paymentDate" class="input" type="date">
+          <small class="hint">Date of the latest payment. If you raise Amount paid, the extra amount is recorded on this date.</small>
+          <small class="err" role="alert"></small>
+        </div>
+        <div class="field" data-field="time">
+          <label for="f-time">Preferred training time *</label>
+          <select id="f-time" class="input">
+            <option value="">Select</option><option>Morning</option><option>Afternoon</option><option>Evening</option>
+          </select>
+          <small class="err" role="alert"></small>
+        </div>
+        <div class="field span-3" data-field="notes">
+          <label for="f-notes">Notes (optional)</label>
+          <textarea id="f-notes" class="input" rows="2" maxlength="200" placeholder="Injuries, goals, batch preferences"></textarea>
+          <small class="err" role="alert"></small>
+        </div>
+      </div>
+    </div>
+
+    <footer class="modal-foot">
+      <button type="button" class="btn btn-ghost" data-act="close-dialog">Cancel</button>
+      <button type="submit" class="btn btn-primary" id="saveBtn">Save trainee</button>
+    </footer>
+  </form>
+</dialog>
+
+<!-- Trainee profile -->
+<dialog id="viewDialog" class="modal" aria-labelledby="viewName">
+  <div id="viewBody"></div>
+</dialog>
+
+<!-- Confirmation -->
+<dialog id="confirmDialog" class="modal modal-sm" aria-labelledby="confirmTitle">
+  <form method="dialog">
+    <header class="modal-head"><h2 id="confirmTitle">Confirm</h2></header>
+    <div class="modal-body"><p id="confirmMsg"></p></div>
+    <footer class="modal-foot">
+      <button class="btn btn-ghost" value="no">Cancel</button>
+      <button class="btn btn-danger" value="yes" id="confirmOk">Confirm</button>
+    </footer>
+  </form>
+</dialog>
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<!-- Chart.js (CDN). Needs an internet connection the first time the page loads. -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
