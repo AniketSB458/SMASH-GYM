@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SMASH GYM</title>
+  <title>SMASH GYM </title>
   <meta name="description" content="SMASH GYM: trainee management, fee tracking, subscription monitoring and business intelligence dashboard.">
 
   <!-- Fonts: Barlow Condensed (display/numbers) + DM Sans (interface). Fallbacks are defined in style.css -->
@@ -56,6 +56,7 @@
     <div class="brand-lockup">
       <span class="brand-mark"><svg class="ico"><use href="#i-dumbbell"/></svg></span>
       <span class="brand-name">SMASH GYM</span>
+      <span class="brand-name">💪🏻SHUBHAM POWAR</span>
     </div>
 
     <div class="hero-copy">
@@ -63,7 +64,7 @@
       <p>Trainee records, fee collection, renewals and business intelligence in one admin workspace.</p>
     </div>
 
-    <p class="hero-foot">Business Intelligence academic project. Frontend only, no backend.</p>
+    <p class="hero-foot">Business Intelligence academic project..</p>
   </section>
 
   <section class="login-panel">
@@ -82,28 +83,21 @@
       <h2>Admin sign in</h2>
       <p class="muted">Trainee details, payments, subscriptions and analytics are visible to the administrator only.</p>
 
-      <form id="loginForm" novalidate>
+      <form id="loginForm" novalidate autocomplete="off">
         <div class="field">
           <label for="loginUser">Username</label>
-          <input id="loginUser" class="input" type="text" autocomplete="username" required>
+          <input id="loginUser" class="input" type="text" value="admin" autocomplete="off" required>
         </div>
         <div class="field">
           <label for="loginPass">Password</label>
           <div class="input-group">
-            <input id="loginPass" class="input" type="password" autocomplete="current-password" required>
+            <input id="loginPass" class="input" type="text" value="Smash@2026" autocomplete="off" required>
             <button type="button" class="icon-btn" data-act="toggle-pass" aria-label="Show or hide password"><svg class="ico"><use href="#i-eye"/></svg></button>
           </div>
         </div>
         <p id="loginError" class="form-error" role="alert" hidden></p>
         <button class="btn btn-primary btn-block" type="submit">Sign in to dashboard</button>
       </form>
-
-      <div class="demo-box">
-        <p><strong>Demo credentials</strong></p>
-        <p>Username: <code>admin</code></p>
-        <p>Password: <code>Smash@2026</code></p>
-        <button type="button" class="btn btn-ghost btn-sm" data-act="fill-demo">Fill demo credentials</button>
-      </div>
 
       <p class="fine">Academic demonstration only. This login is checked in the browser, so it is not production security. Real systems must authenticate on a server.</p>
     </div>
